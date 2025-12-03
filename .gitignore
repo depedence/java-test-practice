@@ -1,0 +1,34 @@
+# Идея
+.idea/
+*.iml
+*.iws
+
+# Сборка
+build/
+out/
+target/
+.gradle/
+!gradle/wrapper/
+
+# Логи
+logs/
+*.log
+
+# Системные
+.DS_Store
+Thumbs.db
+
+# Окружение
+.env
+*.properties
+
+# Приложения
+*.jar
+*.war
+*.ear
+
+# Прочее
+**/.gradle/
+**/gradle-app.setting
+**/replay_pid*
+EOF

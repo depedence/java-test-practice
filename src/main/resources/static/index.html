@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Interface</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #2c3e50; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h2 { color: #3498db; margin-bottom: 20px; font-size: 1.4rem; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
+        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        input:focus { border-color: #3498db; outline: none; }
+        .btn { background: #3498db; color: white; border: none; padding: 14px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s; }
+        .btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #219653; }
+        .result { background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 25px; min-height: 150px; font-family: monospace; white-space: pre-wrap; overflow: auto; border: 1px solid #e0e0e0; }
+        .log { color: #7f8c8d; font-size: 14px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>API Testing Interface</h1>
+
+    <div class="grid">
+        <!-- GET All Users -->
+        <div class="card">
+            <h2>GET /api/users</h2>
+            <button class="btn" onclick="getUsers()">Get All Users</button>
+            <div class="result" id="result1"></div>
+        </div>
+
+        <!-- GET User by ID -->
+        <div class="card">
+            <h2>GET /api/users/{id}</h2>
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="number" id="userId" value="1" min="1">
+            </div>
+            <button class="btn" onclick="getUser()">Get User</button>
+            <div class="result" id="result2"></div>
+        </div>
+
+        <!-- POST Create User -->
+        <div class="card">
+            <h2>POST /api/users</h2>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="postName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="postEmail" placeholder="john@example.com">
+            </div>
+            <button class="btn btn-success" onclick="createUser()">Create User</button>
+            <div class="result" id="result3"></div>
+        </div>
+
+        <!-- PUT Update User -->
+        <div class="card">
+            <h2>PUT /api/users/{id}</h2>
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="number" id="putId" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label>New Name:</label>
+                <input type="text" id="putName" placeholder="New Name">
+            </div>
+            <div class="form-group">
+                <label>New Email:</label>
+                <input type="email" id="putEmail" placeholder="new@example.com">
+            </div>
+            <button class="btn" onclick="updateUser()">Update User</button>
+            <div class="result" id="result4"></div>
+        </div>
+
+        <!-- DELETE User -->
+        <div class="card">
+            <h2>DELETE /api/users/{id}</h2>
+            <div class="form-group">
+                <label>User ID to delete:</label>
+                <input type="number" id="deleteId" value="1" min="1">
+            </div>
+            <button class="btn btn-danger" onclick="deleteUser()">Delete User</button>
+            <div class="result" id="result5"></div>
+        </div>
+
+        <!-- Test All -->
+        <div class="card" style="grid-column: span 2;">
+            <h2>Run All API Tests</h2>
+            <button class="btn" onclick="runAllTests()">Run Full Test Suite</button>
+            <div class="result" id="result6"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http://localhost:8080/api';
+
+    function displayResult(id, data) {
+        document.getElementById(id).innerHTML = JSON.stringify(data, null, 2);
+        console.log(data);
+    }
+
+    async function getUsers() {
+        const response = await fetch(`${API_BASE}/users`);
+        displayResult('result1', await response.json());
+    }
+
+    async function getUser() {
+        const id = document.getElementById('userId').value;
+        const response = await fetch(`${API_BASE}/users/${id}`);
+        displayResult('result2', await response.json());
+    }
+
+    async function createUser() {
+        const user = {
+            name: document.getElementById('postName').value,
+            email: document.getElementById('postEmail').value
+        };
+        const response = await fetch(`${API_BASE}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        });
+        displayResult('result3', await response.json());
+    }
+
+    async function updateUser() {
+        const id = document.getElementById('putId').value;
+        const user = {
+            name: document.getElementById('putName').value,
+            email: document.getElementById('putEmail').value
+        };
+        const response = await fetch(`${API_BASE}/users/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        });
+        displayResult('result4', await response.json());
+    }
+
+    async function deleteUser() {
+        const id = document.getElementById('deleteId').value;
+        const response = await fetch(`${API_BASE}/users/${id}`, {
+            method: 'DELETE'
+        });
+        displayResult('result5', await response.text());
+    }
+
+    async function runAllTests() {
+    let log = '=== API Endpoints ===\n\n';
+    log += '1. GET /api/users\n';
+    log += '2. GET /api/users/{id}\n';
+    log += '3. POST /api/users\n';
+    log += '4. PUT /api/users/{id}\n';
+    log += '5. DELETE /api/users/{id}\n\n';
+    log += 'Нажми кнопки выше для тестов.';
+    document.getElementById('result6').innerHTML = log;
+    }
+</script>
+</body>
+</html>
