@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.pages.HomePage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class UiTestBase {
 
     protected WebDriver driver;
+    protected HomePage homePage;
 
     @BeforeEach
     void setUp() {
